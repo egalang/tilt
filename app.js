@@ -5,9 +5,9 @@
   const ctx = canvas.getContext("2d");
 
   const overlay = document.getElementById("overlay");
-  const tiltButton = document.getElementById("tiltButton");
   const startButton = document.getElementById("startButton");
   const restartButton = document.getElementById("restartButton");
+  const pauseButton = document.getElementById("pauseButton");
   const statusText = document.getElementById("statusText");
 
   const timeValue = document.getElementById("timeValue");
@@ -30,6 +30,7 @@
 
   const state = {
     running: false,
+    paused: false,
     gameOver: false,
     timeLeft: START_TIME,
     score: 0,
@@ -387,6 +388,8 @@
     state.score = 0;
     state.level = 1;
     state.elapsed = 0;
+    state.running = false;
+    state.paused = false;
     state.gameOver = false;
     state.finishedRun = false;
     state.checkpointFlash = 0;
@@ -401,14 +404,18 @@
     state.nextStageSpawnPoint = { x: W * 0.5, y: H * 0.5 };
     loadStage(1, state.nextStageSpawnPoint);
     syncHud();
+    startButton.textContent = "Start Game";
+    syncPauseButton();
     restartButton.classList.add("hidden");
   }
 
-  function grantTiltFromCurrentDevice() {
+  function grantTiltFromCurrentDevice(silent = false) {
     state.usingTilt = true;
     state.tiltAvailable = true;
     calibrateTiltNeutral();
-    setMessage("Tilt enabled. Hold device flat, then tap Start Game.");
+    if (!silent) {
+      setMessage("Tilt enabled. Hold device flat, then tap Start Game.");
+    }
   }
 
   async function enableTilt() {
@@ -438,12 +445,98 @@
     }
   }
 
-  function startGame() {
+  async function ensureTiltReadyForStart() {
+    try {
+      ensureAudio();
+
+      if (typeof DeviceOrientationEvent === "undefined") {
+        state.usingTilt = false;
+        state.tiltAvailable = false;
+        setMessage("Tilt sensors are not available in this browser. Use arrow keys/WASD.");
+        return;
+      }
+
+      if (typeof DeviceOrientationEvent.requestPermission === "function") {
+        if (!state.tiltPermissionGranted) {
+          const result = await DeviceOrientationEvent.requestPermission();
+          if (result === "granted") {
+            state.tiltPermissionGranted = true;
+            grantTiltFromCurrentDevice(true);
+          } else {
+            state.usingTilt = false;
+            setMessage("Tilt permission was not granted. You can still play with arrow keys/WASD.");
+          }
+        } else {
+          grantTiltFromCurrentDevice(true);
+        }
+      } else {
+        state.tiltPermissionGranted = true;
+        grantTiltFromCurrentDevice(true);
+      }
+    } catch (err) {
+      console.error(err);
+      state.usingTilt = false;
+      setMessage("Could not enable tilt. On Android over HTTP, sensors may be blocked. Use HTTPS or arrow keys/WASD.");
+    }
+  }
+
+  function syncPauseButton() {
+    if (state.running && !state.gameOver) {
+      pauseButton.classList.remove("hidden");
+      pauseButton.textContent = state.paused ? "Resume" : "Pause";
+    } else {
+      pauseButton.classList.add("hidden");
+      pauseButton.textContent = "Pause";
+    }
+  }
+
+  function pauseGame() {
+    if (!state.running || state.gameOver || state.paused) return;
+    state.running = false;
+    state.paused = true;
+    overlay.classList.remove("hidden");
+    startButton.textContent = "Resume";
+    restartButton.classList.remove("hidden");
+    setMessage("Game paused. Tap Resume to continue or Restart to begin again.");
+    syncPauseButton();
+  }
+
+  function resumeGame() {
+    if (!state.paused || state.gameOver) return;
+    if (state.usingTilt) calibrateTiltNeutral();
+    state.running = true;
+    state.paused = false;
+    overlay.classList.add("hidden");
+    startButton.textContent = "Start Game";
+    setMessage(`Resumed. ${currentStage().name}: chaser arrives in ${Math.max(0, state.chaserSpawnTimer).toFixed(1)} seconds.`);
+    syncPauseButton();
+    requestAnimationFrame(loop);
+  }
+
+  function togglePause() {
+    if (state.paused) {
+      resumeGame();
+    } else {
+      pauseGame();
+    }
+  }
+
+  async function startGame() {
     ensureAudio();
+    await ensureTiltReadyForStart();
+
+    if (state.paused && !state.gameOver) {
+      resumeGame();
+      playSound("start");
+      return;
+    }
+
     resetGame();
     if (state.usingTilt) calibrateTiltNeutral();
     state.running = true;
+    state.paused = false;
     overlay.classList.add("hidden");
+    syncPauseButton();
     playSound("start");
     setMessage(`${currentStage().name}: spawn at center, then the chaser appears after ${CHASER_SPAWN_DELAY} seconds. Hit 3 checkpoints, then enter the portal.`);
     requestAnimationFrame(loop);
@@ -451,7 +544,10 @@
 
   function endGame(messageOverride = null, win = false) {
     state.running = false;
+    state.paused = false;
     state.gameOver = true;
+    startButton.textContent = "Start Game";
+    syncPauseButton();
     state.finishedRun = win;
     overlay.classList.remove("hidden");
     restartButton.classList.remove("hidden");
@@ -1013,9 +1109,9 @@
     state.keys.delete(key);
   });
 
-  tiltButton.addEventListener("click", enableTilt);
   startButton.addEventListener("click", startGame);
   restartButton.addEventListener("click", startGame);
+  pauseButton.addEventListener("click", togglePause);
 
   window.addEventListener("load", () => {
     resetGame();

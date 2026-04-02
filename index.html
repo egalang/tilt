@@ -11,10 +11,14 @@
 <body>
   <div class="app">
     <header class="hud">
+      <!-- Row 1 -->
       <div class="stat"><span>Time</span><strong id="timeValue">15.0</strong></div>
       <div class="stat"><span>Checkpoints</span><strong id="scoreValue">0</strong></div>
       <div class="stat"><span>Level</span><strong id="levelValue">1</strong></div>
+      <!-- Row 2 -->
       <div class="stat"><span>Best</span><strong id="bestValue">0</strong></div>
+      <div class="tilt-label">TILT!</div>
+      <button id="pauseButton" class="stat-button hidden" type="button">Pause</button>
     </header>
 
     <main class="game-shell">
@@ -22,22 +26,17 @@
 
       <section class="overlay" id="overlay">
         <div class="panel">
-          <h1>Tilt Checkpoint Endless+</h1>
+          <h1>Tilt!</h1>
           <p class="lead">
             Tilt your phone to roll the ball into each glowing checkpoint before time runs out.
             Survive endless handcrafted stages, collect 3 checkpoints per stage, then enter the finish portal to advance. A red chaser ball hunts you each stage.
           </p>
 
-          <div class="controls-list">
-            <div>Android/mobile: tap <strong>Enable Tilt</strong>, then <strong>Start Game</strong>.</div>
-            <div>Desktop fallback: use <strong>arrow keys</strong> or <strong>WASD</strong>.</div>
-            <div>Each stage has 3 fixed checkpoints. After the third one, a finish portal appears.</div>
-            <div>The red chaser speeds up every stage. If it catches you, you lose time and it disappears until the next stage.</div>
-            <div>Hazards still remove time and knock the ball back. Portal clears add bonus time.</div>
+          <div class="panel-image">
+            <img src="assets/tilt-preview.png" alt="Tilt gameplay preview" />
           </div>
 
           <div class="button-row">
-            <button id="tiltButton" class="primary">Enable Tilt</button>
             <button id="startButton" class="accent">Start Game</button>
             <button id="restartButton" class="secondary hidden">Restart</button>
           </div>
@@ -48,7 +47,7 @@
     </main>
 
     <footer class="footer">
-      <span>Tip: tap Start while the device is flat to calibrate neutral tilt.</span>
+      <span>Tip: tap Start or Restart while the device is flat to calibrate neutral tilt.</span>
     </footer>
   </div>
 
