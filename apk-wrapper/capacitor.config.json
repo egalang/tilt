@@ -1,0 +1,9 @@
+{
+  "appId": "com.example.tiltcheckpoint",
+  "appName": "Tilt Checkpoint",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  }
+}

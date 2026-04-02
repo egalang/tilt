@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#111827" />
+  <title>Tilt Checkpoint Endless+</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="hud">
+      <div class="stat"><span>Time</span><strong id="timeValue">15.0</strong></div>
+      <div class="stat"><span>Checkpoints</span><strong id="scoreValue">0</strong></div>
+      <div class="stat"><span>Level</span><strong id="levelValue">1</strong></div>
+      <div class="stat"><span>Best</span><strong id="bestValue">0</strong></div>
+    </header>
+
+    <main class="game-shell">
+      <canvas id="gameCanvas" width="720" height="1280" aria-label="Tilt ball game"></canvas>
+
+      <section class="overlay" id="overlay">
+        <div class="panel">
+          <h1>Tilt Checkpoint Endless+</h1>
+          <p class="lead">
+            Tilt your phone to roll the ball into each glowing checkpoint before time runs out.
+            Survive endless handcrafted stages, collect 3 checkpoints per stage, then enter the finish portal to advance. A red chaser ball hunts you each stage.
+          </p>
+
+          <div class="controls-list">
+            <div>Android/mobile: tap <strong>Enable Tilt</strong>, then <strong>Start Game</strong>.</div>
+            <div>Desktop fallback: use <strong>arrow keys</strong> or <strong>WASD</strong>.</div>
+            <div>Each stage has 3 fixed checkpoints. After the third one, a finish portal appears.</div>
+            <div>The red chaser speeds up every stage. If it catches you, you lose time and it disappears until the next stage.</div>
+            <div>Hazards still remove time and knock the ball back. Portal clears add bonus time.</div>
+          </div>
+
+          <div class="button-row">
+            <button id="tiltButton" class="primary">Enable Tilt</button>
+            <button id="startButton" class="accent">Start Game</button>
+            <button id="restartButton" class="secondary hidden">Restart</button>
+          </div>
+
+          <p id="statusText" class="status">Waiting to start.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Tip: tap Start while the device is flat to calibrate neutral tilt.</span>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
