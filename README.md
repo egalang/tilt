@@ -1,12 +1,3 @@
-Perfect—this is exactly the right move 👍
-You want something you can **drop into GitHub and use to restart anywhere**.
-
-Below is a **complete, production-ready README.md** tailored to your project and workflow (CLI-based, Docker-aware mindset, Capacitor APK build, etc.).
-
----
-
-# 📄 README.md (Ready to Use)
-
 ```markdown
 # 🎮 Tilt Checkpoint
 
