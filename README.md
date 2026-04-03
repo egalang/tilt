@@ -285,31 +285,6 @@ This project demonstrates:
 
 # 🙌 Credits
 
-Developed by: **Victor Galang**
+Developed by: **Erwin Galang**
 
-```
-
----
-
-# 🔥 What You Now Have
-
-This README:
-- ✅ lets you rebuild from scratch
-- ✅ prevents all errors you encountered
-- ✅ documents your full deployment pipeline
-- ✅ is GitHub-ready
-
----
-
-# 🚀 Optional Upgrade
-
-If you want next level, I can also generate:
-- `.gitignore` (important for Android builds)
-- automated build script (`build.sh`)
-- Play Store optimized description + screenshots
-- CI/CD pipeline (GitHub Actions → build APK automatically)
-
----
-
-Just tell me 👍
 ```
